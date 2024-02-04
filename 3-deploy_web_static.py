@@ -76,3 +76,8 @@ def deploy():
     if file is None:
         return False
     return do_deploy(file)
+
+
+if __name__ == "__main__":
+    archive_path = 'versions/web_static_20240201050052.tgz'
+    deploy()
