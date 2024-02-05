@@ -16,13 +16,18 @@ env.hosts = ['54.237.16.172', '54.237.100.72']
 
 def do_pack():
     """generates a tgz archive"""
-    try:
-        date = datetime.now().strftime("%Y%m%d%H%M%S")
+    if not os.path.exists("versions"):
         local("mkdir -p versions")
-        file_name = "versions/web_static_{}.tgz".format(date)
-        local("tar -cvzf {} web_static".format(file_name))
-        return file_name
-    except:
+
+    timestamp = datetime.utcnow().strftime("%Y%m%d%H%M%S")
+    archive_name = "web_static_{}.tgz".format(timestamp)
+    archive_path = "versions/{}".format(archive_name)
+
+    result = local("tar -cvzf {} web_static".format(archive_path))
+
+    if result.succeeded:
+        return archive_path
+    else:
         return None
 
 
