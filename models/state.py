@@ -1,35 +1,34 @@
 #!/usr/bin/python3
-""" State Module for HBNB project """
+"""This is the state class"""
+from sqlalchemy.ext.declarative import declarative_base
 from models.base_model import BaseModel, Base
-from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, String
+import models
 from models.city import City
-import os
+import shlex
 
 
 class State(BaseModel, Base):
-    """ State class """
-    __tablename__ = 'states'
-
+    """This is the class for State
+    Attributes:
+        name: input name
+    """
+    __tablename__ = "states"
     name = Column(String(128), nullable=False)
+    related_cities = relationship("City", cascade='all, delete, delete-orphan',
+                                  backref="state")
 
-    if os.getenv('HBNB_TYPE_STORAGE') == 'db':
-        cities = relationship(
-                "City",
-                backref="state",
-                cascade="all, delete-orphan")
-
-    else:
-        @property
-        def cities(self):
-            """
-            Returns City objects with state_id equal to
-            State.id
-
-            """
-            from models import storage
-            city_list = []
-            for city_id, city in storage.all(City):
-                if city.state_id == self.id:
-                    city_list.append(city)
-            return city_list
+    @property
+    def cities(self):
+        all_objects = models.storage.all()
+        city_objects = []
+        result = []
+        for key in all_objects:
+            key_parts = key.replace('.', ' ').split()
+            if key_parts[0] == 'City':
+                city_objects.append(all_objects[key])
+        for elem in city_objects:
+            if elem.state_id == self.id:
+                result.append(elem)
+        return result
