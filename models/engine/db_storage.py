@@ -5,6 +5,7 @@ connection."""
 from os import getenv
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy.ext.declarative import declarative_base
 import models
 from models.base_model import Base
 from models.base_model import BaseModel
@@ -14,6 +15,7 @@ from models.place import Place
 from models.review import Review
 from models.state import State
 from models.user import User
+from os import getenv
 
 
 class DBStorage:
@@ -27,12 +29,12 @@ class DBStorage:
         pwd = getenv("HBNB_MYSQL_PWD")
         host = getenv("HBNB_MYSQL_HOST")
         db = getenv("HBNB_MYSQL_DB")
-        envv = getenv("HBNB_ENV", "none")
+        env = getenv("HBNB_ENV", "none")
 
         self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.format(
             user, pwd, host, db), pool_pre_ping=True)
 
-        if envv == 'test':
+        if env == 'test':
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
