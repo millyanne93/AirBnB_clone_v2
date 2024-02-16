@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 """ Holds the State class """
 import models
 from models.base_model import BaseModel, Base
@@ -6,11 +5,11 @@ from os import getenv
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 
-
 class State(BaseModel, Base):
     """ Representation of a state """
+    __tablename__ = 'states'
+
     if getenv('HBNB_TYPE_STORAGE') == 'db':
-        __tablename__ = 'states'
         name = Column(String(128), nullable=False)
         cities = relationship("City", cascade="all, delete", backref="state")
     else:
