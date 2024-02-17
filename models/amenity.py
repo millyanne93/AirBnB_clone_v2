@@ -1,32 +1,17 @@
 #!/usr/bin/python3
-""" Amenity Module for HBNB project """
+"""This is the amenity class"""
+from sqlalchemy import Column, Integer, String, ForeignKey, MetaData
 from models.base_model import BaseModel, Base
-from sqlalchemy import Column, String, Table, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
+from models.place import place_amenity
 
 
 class Amenity(BaseModel, Base):
-    """class for amenities"""
-    __tablename__ = 'amenities'
+    """This is the class for Amenity
+    Attributes:
+        name: input name
+    """
 
+    __tablename__ = "amenities"
     name = Column(String(128), nullable=False)
-
-    def __init__(self, *args, **kwargs):
-        """ Amenity class constructor """
-        seper().__init__(*args, **kwargs)
-        from models.place import Place
-
-        place_amenities = Table(
-                'place_amenity',
-                Base.metadata,
-                Column('place_id', String(60), ForeignKey('places.id'),
-                        primary_key=True, nullable=False),
-                Column('amenity_id', String(60), ForeignKey('amenities.id'),
-                       primary_key=True, nullable=False)
-        )
-
-        places = relationship(
-                "Place",
-                secondary="place_amenities",
-                back_populates="amenities"
-        )
+    place_amenities = relationship("Place", secondary=place_amenity)
